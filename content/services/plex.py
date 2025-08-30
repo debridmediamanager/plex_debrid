@@ -68,7 +68,7 @@ class watchlist(classes.watchlist):
                 total = 1
                 while added < total:
                     total = 0
-                    url = 'https://metadata.provider.plex.tv/library/sections/watchlist/all?X-Plex-Container-Size=200&X-Plex-Container-Start=' + str(added) + '&X-Plex-Token=' + user[1]
+                    url = 'https://discover.provider.plex.tv/library/sections/watchlist/all?X-Plex-Container-Size=200&X-Plex-Container-Start=' + str(added) + '&X-Plex-Token=' + user[1]
                     response = get(url)
                     if hasattr(response, 'MediaContainer'):
                         total = response.MediaContainer.totalSize
@@ -133,7 +133,7 @@ class watchlist(classes.watchlist):
         new_watchlist = []
         try:
             for user in users:
-                url = 'https://metadata.provider.plex.tv/library/sections/watchlist/all?X-Plex-Token=' + user[1]
+                url = 'https://discover.provider.plex.tv/library/sections/watchlist/all?X-Plex-Token=' + user[1]
                 response = get(url)
                 if hasattr(response, 'MediaContainer'):
                     if hasattr(response.MediaContainer, 'Metadata'):
