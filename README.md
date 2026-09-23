@@ -53,7 +53,7 @@ This is a work in progress, and im not a professional programmer. shits not read
    - <img src="https://nyaa.si/static/favicon.png" height="16"> **[NYAA](https://nyaa.si/)**
 - Defining multiple, completely customizable versions to download (2160p HDR, 1080p SDR, etc)
 - Checking for cached releases and adding them to:
-   - <img src="https://fcdn.real-debrid.com/0818/favicons/favicon.ico" height="16"> **[RealDebrid](http://real-debrid.com/?id=5708990)**
+   - <img src="https://fcdn.real-debrid.com/0818/favicons/favicon.ico" height="16"> **[RealDebrid](http://real-debrid.com/?id=3290031)**
    - <img src="https://www.premiumize.me/favicon-16x16.png" height="16"> **[Premiumize](https://www.premiumize.me/)**
    - <img src="https://cdn.alldebrid.com/lib/images/default/favicon.png" height="16"> **[AllDebrid](https://alldebrid.com/)**
    - <img src="https://cdn.debrid-link.com/favicon.ico?i=2" height="16"> **[DebridLink](https://debrid-link.com/)**
