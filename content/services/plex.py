@@ -68,7 +68,7 @@ class watchlist(classes.watchlist):
                 total = 1
                 while added < total:
                     total = 0
-                    url = 'https://metadata.provider.plex.tv/library/sections/watchlist/all?X-Plex-Container-Size=200&X-Plex-Container-Start=' + str(added) + '&X-Plex-Token=' + user[1]
+                    url = 'https://discover.provider.plex.tv/library/sections/watchlist/all?X-Plex-Container-Size=200&X-Plex-Container-Start=' + str(added) + '&X-Plex-Token=' + user[1]
                     response = get(url)
                     if hasattr(response, 'MediaContainer'):
                         total = response.MediaContainer.totalSize
@@ -100,7 +100,7 @@ class watchlist(classes.watchlist):
         if hasattr(item, 'user'):
             if isinstance(item.user[0], list):
                 for user in item.user:
-                    url = 'https://metadata.provider.plex.tv/actions/removeFromWatchlist?ratingKey=' + item.ratingKey + '&X-Plex-Token=' + user[1]
+                    url = 'https://discover.provider.plex.tv/actions/removeFromWatchlist?ratingKey=' + item.ratingKey + '&X-Plex-Token=' + user[1]
                     try:
                         response = session.put(url, data={'ratingKey': item.ratingKey})
                         ui_print('[plex] item: "' + item.title + '" removed from ' + user[0] + '`s watchlist')
@@ -109,7 +109,7 @@ class watchlist(classes.watchlist):
                 if not self == []:
                     self.data.remove(item)
             else:
-                url = 'https://metadata.provider.plex.tv/actions/removeFromWatchlist?ratingKey=' + item.ratingKey + '&X-Plex-Token=' + item.user[1]
+                url = 'https://discover.provider.plex.tv/actions/removeFromWatchlist?ratingKey=' + item.ratingKey + '&X-Plex-Token=' + item.user[1]
                 try:
                     response = session.put(url, data={'ratingKey': item.ratingKey})
                     ui_print('[plex] item: "' + item.title + '" removed from ' + item.user[0] + '`s watchlist')
@@ -120,7 +120,7 @@ class watchlist(classes.watchlist):
 
     def add(self, item, user):
         ui_print('[plex] item: "' + item.title + '" added to ' + user[0] + '`s watchlist')
-        url = 'https://metadata.provider.plex.tv/actions/addToWatchlist?ratingKey=' + item.ratingKey + '&X-Plex-Token=' + \
+        url = 'https://discover.provider.plex.tv/actions/addToWatchlist?ratingKey=' + item.ratingKey + '&X-Plex-Token=' + \
                 user[1]
         response = session.put(url, data={'ratingKey': item.ratingKey})
         if item.type == 'show':
@@ -133,7 +133,7 @@ class watchlist(classes.watchlist):
         new_watchlist = []
         try:
             for user in users:
-                url = 'https://metadata.provider.plex.tv/library/sections/watchlist/all?X-Plex-Token=' + user[1]
+                url = 'https://discover.provider.plex.tv/library/sections/watchlist/all?X-Plex-Token=' + user[1]
                 response = get(url)
                 if hasattr(response, 'MediaContainer'):
                     if hasattr(response.MediaContainer, 'Metadata'):
@@ -876,11 +876,11 @@ class library(classes.library):
                             episode.grandparentEID = item.EID
             except:
                 ui_print('done')
-                ui_print("[plex error]: found incorrectly matched library item : " + item.title + " - this item needs a metadata refresh (open plex webui, find item, open item menu, refresh metadata).")  
+                ui_print("[plex error]: found incorrectly matched library item : " + item.title + " - this item needs a metadata refresh (open plex webui, find item, open item menu, refresh metadata).")
         ui_print('done')
         current_library = copy.deepcopy(list_)
         if first_load and updated:
-            store.save(current_library,"plex","metadata")       
+            store.save(current_library,"plex","metadata")
         return list_
 
 def search(query, library=[]):

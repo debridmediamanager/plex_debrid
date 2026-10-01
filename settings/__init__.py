@@ -264,7 +264,7 @@ class setting:
                         lists = [edit, ]
                         setattr(self.cls, self.key, lists)
                     if self.name == 'Plex users':
-                        url = 'https://metadata.provider.plex.tv/library/sections/watchlist/all?X-Plex-Token=' + \
+                        url = 'https://discover.provider.plex.tv/library/sections/watchlist/all?X-Plex-Token=' + \
                                 content.services.plex.users[0][1]
                         response = content.services.plex.session.get(url, headers=content.services.plex.headers)
                         if response.status_code == 200:
@@ -360,7 +360,7 @@ settings_list = [
         setting('Local ignore list path', 'Please provide a path where the list ignored media items should be saved: ', content.services.textfile.library.ignore, 'path', hidden=True),
         setting('Jellyfin API Key', 'Please specify your Jellyfin API Key: ', content.services.jellyfin, 'api_key', hidden=True),
         setting('Jellyfin server address', 'Please enter your Jellyfin server address: ', content.services.jellyfin.library, 'url', hidden=True),
-    
+
     ]
         ],
     ['Scraper Settings', [

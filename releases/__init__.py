@@ -24,8 +24,13 @@ class release:
         self.download = download
         self.hash = ''
         if len(self.download) > 0:
-            if regex.search(r'(?<=btih:).*?(?=&)', str(self.download[0]), regex.I):
-                self.hash = regex.findall(r'(?<=btih:).*?(?=&)', str(self.download[0]), regex.I)[0]
+            match = regex.search(
+                r'btih:([A-Fa-f0-9]{40})(?:&|$)',
+                str(self.download[0]),
+                regex.I
+            )
+            if match:
+                self.hash = match.group(1).lower()
         self.cached = []
         self.checked = False
         self.wanted = 0
@@ -145,7 +150,7 @@ class sort:
         return
 
     class version:
-        
+
         def setup(name, version_, new=False):
             back = False
             default = version_[3]
@@ -605,7 +610,7 @@ class sort:
                 upgrade = len(self.apply(releases)) == 0
                 self.weight = "upgrade"
                 return upgrade
-            
+
         class resolution(rule):
             name = "resolution"
             operators = ["==", ">=", "<=", "highest", "lowest"]
@@ -1113,12 +1118,12 @@ class sort:
                                 episode.offset_airtime[self.value] = datetime.datetime.strptime(episode.first_aired,'%Y-%m-%dT%H:%M:%S.000Z') + datetime.timedelta(hours=float(self.value))
                             elif hasattr(episode,"originallyAvailableAt"):
                                 episode.offset_airtime[self.value] = datetime.datetime.strptime(episode.originallyAvailableAt,'%Y-%m-%d') + datetime.timedelta(hours=float(self.value))
-                    return element.offset_airtime[self.value] < datetime.datetime.utcnow() 
+                    return element.offset_airtime[self.value] < datetime.datetime.utcnow()
                 except:
                     if element.type == "season":
                         return True
                     return False
-        
+
         class year(trigger):
             name = "year"
             operators = ["==",">=", "<="]
@@ -1373,7 +1378,7 @@ class sort:
             ["retries","<=","48"],
             ["media type","all",""],
          ],
-         "true", 
+         "true",
          [
             ["cache status", "requirement", "cached", ""],
             ["resolution", "requirement", "<=", "1080"],
@@ -1518,7 +1523,7 @@ class torrent2magnet:
         return 'magnet:?' \
                 + 'xt=urn:btih:' + digest \
                 + '&dn=' + metadata[b'info'][b'name'].decode() \
-                + '&tr=' + metadata[b'announce'].decode() 
+                + '&tr=' + metadata[b'announce'].decode()
 
 def print_releases(scraped_releases,uiprint=False):
     longest_file = 0
@@ -1548,13 +1553,13 @@ def print_releases(scraped_releases,uiprint=False):
         if len(str(index + 1)) > longest_index:
             longest_index = len(str(index + 1))
     for index, release in enumerate(scraped_releases):
-        i = str(index + 1) + ") " + ' ' * (longest_index - len(str(index + 1))) 
-        title = "title: " + release.title + ' ' * (longest_title - len(release.title)) 
+        i = str(index + 1) + ") " + ' ' * (longest_index - len(str(index + 1)))
+        title = "title: " + release.title + ' ' * (longest_title - len(release.title))
         size = " | size: " + str(release.printsize) + ' ' * (longest_size - len(str(release.printsize)))
         bitrate = " | bitrate: " + str(release.printbit) + ' ' * (longest_bitrate - len(str(release.printbit))) if hasattr(release,"bitrate") else ""
         cached = " | cached: " + '/'.join(release.cached) + ' ' * (longest_cached - len('/'.join(release.cached)))
         seeders = " | seeders: " + str(release.seeders) + ' ' * (longest_seeders - len(str(release.seeders)))
-        files = " | files: " + release.file + ' ' * (longest_file - len(release.file)) 
+        files = " | files: " + release.file + ' ' * (longest_file - len(release.file))
         source = " | source: " + release.source
         if uiprint:
             ui_print(i + title + size + bitrate + cached + seeders + files + source, ui_settings.debug)
