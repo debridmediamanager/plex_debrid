@@ -17,6 +17,10 @@ errors = [
     [503," service unavailable (see error message)"],
     [404," wrong parameter (invalid file id(s)) / unknown ressource (invalid id)"],
     ]
+# Real-Debrid refuses (451 infringing_file) any torrent whose name carries one of these tags, in any case (measured 2026-10-10)
+blocked = regex.compile(r'web-dl|(?:web|bd|hd|dvd)rip|bluray\.x264|p\.bluray\.dts|hdtv\.(?:x264|xvid)|web\.(?:x264|h264)', regex.I)
+# Hashes Real-Debrid answered 451 for during this run. Memory only: on a clean name a 451 is usually a short account-wide block, not a verdict.
+refused = set()
 def setup(cls, new=False):
     from debrid.services import setup
     setup(cls,new)
@@ -76,6 +80,16 @@ def delete(url):
         ui_print("[realdebrid] error: (delete exception): " + str(e), debug=ui_settings.debug)
         None
     return None
+
+# Add a release's magnet, unless Real-Debrid is known to refuse it
+def add_magnet(release):
+    if blocked.search(release.title) or release.hash.lower() in refused:
+        ui_print('[realdebrid] skipping release: "' + release.title + '" because real debrid refuses its name or refused it earlier this run', ui_settings.debug)
+        return None
+    response = post('https://api.real-debrid.com/rest/1.0/torrents/addMagnet',{'magnet': str(release.download[0])})
+    if getattr(response, 'error', '') == 'infringing_file' and release.hash:
+        refused.add(release.hash.lower())
+    return response
 
 # Object classes
 class file:
@@ -139,7 +153,7 @@ def download(element, stream=True, query='', force=False):
                                 cached_ids += [file.id]
                             # post magnet to real debrid
                             try:
-                                response = post('https://api.real-debrid.com/rest/1.0/torrents/addMagnet',{'magnet': str(release.download[0])})
+                                response = add_magnet(release)
                                 torrent_id = str(response.id)
                             except:
                                 ui_print('[realdebrid] error: could not add magnet for release: ' + release.title, ui_settings.debug)
@@ -182,7 +196,7 @@ def download(element, stream=True, query='', force=False):
                 return False
             else:
                 try:
-                    response = post('https://api.real-debrid.com/rest/1.0/torrents/addMagnet',{'magnet': release.download[0]})
+                    response = add_magnet(release)
                     time.sleep(0.1)
                     post('https://api.real-debrid.com/rest/1.0/torrents/selectFiles/' + str(response.id),{'files': 'all'})
                     ui_print('[realdebrid] adding uncached release: ' + release.title)
