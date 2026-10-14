@@ -17,8 +17,8 @@ errors = [
     [503," service unavailable (see error message)"],
     [404," wrong parameter (invalid file id(s)) / unknown ressource (invalid id)"],
     ]
-# Real-Debrid refuses (451 infringing_file) any torrent whose name carries one of these tags, in any case (measured 2026-10-10)
-blocked = regex.compile(r'web-dl|(?:web|bd|hd|dvd)rip|bluray\.x264|p\.bluray\.dts|hdtv\.(?:x264|xvid)|web\.(?:x264|h264)', regex.I)
+# Real-Debrid refuses (451 infringing_file) any torrent whose name carries one of these tags (measured 2026-10-14): WEB-DL, WEB.x264 and WEB.H264 only in exactly that case, the rest in any case
+blocked = regex.compile(r'WEB-DL|WEB\.(?:x264|H264)|(?i:(?:web|bd|hd|dvd)rip|bluray\.x264|p\.bluray\.dts|hdtv\.(?:x264|xvid))')
 # Hashes Real-Debrid answered 451 for during this run. Memory only: on a clean name a 451 is usually a short account-wide block, not a verdict.
 refused = set()
 def setup(cls, new=False):

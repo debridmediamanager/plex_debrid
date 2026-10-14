@@ -50,4 +50,10 @@ assert download(CLEAN) == (True, 1), 'a clean name must be added'
 assert download(BLOCKED) == (False, 1), 'a 451 on a clean name is tried once'
 assert download(BLOCKED) == (False, 0), 'a hash that drew a 451 must not be re-added in the same run'
 assert [bool(realdebrid.blocked.search(n)) for n in ('A.1080p.BluRay.DTS-HD', 'A.2002.BluRay.DTS-HD', 'A.WEB.DL', 'a.webrip')] == [True, False, False, True]
+# Real-Debrid's own answers on 2026-10-14, each name a fresh webseed torrent so only the name decided:
+# an add is judged on the root name, an unrestrict on the file's own name.
+import json
+probe = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'rd-name-filter-2026-10-14.json')))
+for answer in probe['add'] + probe['unrestrict']:
+    assert bool(realdebrid.blocked.search(answer['name'])) == (answer['status'] == 451), answer
 print('ok')
